@@ -22,7 +22,15 @@ def get_active_llm():
             f"(expected prefix '{expected_prefix}')"
         )
 
+    # Generation params with safe defaults
+    generation_cfg = llm_cfg.get("generation", {})
+
+    temperature = generation_cfg.get("temperature", 0.4)
+    max_tokens = generation_cfg.get("max_tokens", 500)
+
     return {
         "provider": active_provider,
-        "model": active_model
+        "model": active_model,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
     }

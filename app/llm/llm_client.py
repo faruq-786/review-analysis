@@ -39,7 +39,8 @@ Respond as if you are talking to them in a real conversation.
     response = completion(
         model=llm["model"],
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.4
+        temperature=llm["temperature"],
+        max_tokens=llm["max_tokens"]
     )
 
     return response.choices[0].message.content

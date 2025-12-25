@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.schemas.chat import ChatRequest
-from app.mongodb.reviews_repo import fetch_all_reviews
+from app.mongodb.reviews import fetch_all_reviews
 from app.llm.llm_client import analyze_restaurant
 from app.sqlite.chat_repo import save_chat, fetch_chat_history
 

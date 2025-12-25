@@ -1,6 +1,10 @@
 llm:
-  active_provider: gemini
-  active_model: gemini/gemini-2.5-flash
+  active_provider: groq
+  active_model: groq/openai/gpt-oss-20b
+
+  generation:
+    temperature: 0.3
+    max_tokens: 500
 
 providers:
   groq:
