@@ -1,16 +1,8 @@
-import os
-from langchain_groq import ChatGroq
+from litellm import completion
+from app.llm.llm_config import get_active_llm
 from dotenv import load_dotenv
 
 load_dotenv()
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-llm = ChatGroq(
-    model="openai/gpt-oss-120b",
-    api_key=GROQ_API_KEY,
-    temperature=0.3
-)
 
 def analyze_restaurant(reviews, question):
     reviews_text = "\n".join(
@@ -41,5 +33,13 @@ The restaurant owner asks:
 
 Respond as if you are talking to them in a real conversation.
 """
-    response = llm.invoke(prompt)
-    return response.content
+
+    llm = get_active_llm()
+
+    response = completion(
+        model=llm["model"],
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.4
+    )
+
+    return response.choices[0].message.content

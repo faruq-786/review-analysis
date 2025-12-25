@@ -8,6 +8,7 @@ dependencies = [
     "fastapi>=0.127.0",
     "langchain>=1.2.0",
     "langchain-groq>=1.1.1",
+    "litellm>=1.80.11",
     "openai>=2.14.0",
     "pydantic>=2.12.5",
     "pymongo>=4.15.5",

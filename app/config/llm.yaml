@@ -1,0 +1,13 @@
+llm:
+  active_provider: gemini
+  active_model: gemini/gemini-2.5-flash
+
+providers:
+  groq:
+    prefix: groq/
+  openai:
+    prefix: openai/
+  anthropic:
+    prefix: anthropic/
+  gemini:
+    prefix: gemini/
