@@ -1,46 +1,57 @@
+import sys
 from litellm import completion
 from app.llm.llm_config import get_active_llm
-from dotenv import load_dotenv
+from app.logs import get_logger
+from app.exceptions import CustomException
 
-load_dotenv()
+logger = get_logger(__name__)
 
 def analyze_restaurant(reviews, question):
-    reviews_text = "\n".join(
-        f"- {r['food_item']} | Rating: {r['rating']} | {r['review']}"
-        for r in reviews
-    )
+    try:
+        logger.info("Starting restaurant analysis via LLM")
 
-    prompt = f"""
+        reviews_text = "\n".join(
+            f"- {r['food_item']} | Rating: {r['rating']} | {r['review']}"
+            for r in reviews
+        )
+
+        prompt = f"""
 You are a friendly, sharp restaurant performance assistant speaking directly to the restaurant owner.
 
-Your goal:
-- Sound natural, confident, and helpful
-- Avoid sounding like a report or consultant document
-- Do NOT use tables, markdown, headings, or bullet symbols
-- Keep the answer short, engaging, and easy to read
-- Use simple language and a conversational tone
-- Focus on what's going well and what can be improved
-- Give at most 2-3 practical suggestions
+Rules:
+- Conversational
+- Short and insightful
+- No markdown
+- No tables
 
-Context:
-These are real customer reviews from the restaurant.
-
-Reviews:
+Customer reviews:
 {reviews_text}
 
-The restaurant owner asks:
+Owner question:
 "{question}"
 
-Respond as if you are talking to them in a real conversation.
+Answer naturally.
 """
 
-    llm = get_active_llm()
+        llm = get_active_llm()
 
-    response = completion(
-        model=llm["model"],
-        messages=[{"role": "user", "content": prompt}],
-        temperature=llm["temperature"],
-        max_tokens=llm["max_tokens"]
-    )
+        logger.info(
+            f"Calling LLM model={llm['model']} "
+            f"temperature={llm['temperature']} "
+            f"max_tokens={llm['max_tokens']}"
+        )
 
-    return response.choices[0].message.content
+        response = completion(
+            model=llm["model"],
+            messages=[{"role": "user", "content": prompt}],
+            temperature=llm["temperature"],
+            max_tokens=llm["max_tokens"],
+        )
+
+        logger.info("LLM response received successfully")
+
+        return response.choices[0].message.content
+
+    except Exception as e:
+        logger.error("Error while generating LLM response", exc_info=True)
+        raise CustomException(e, sys)
